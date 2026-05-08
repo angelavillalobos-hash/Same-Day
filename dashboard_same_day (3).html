@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard · Cierre SAME DAY</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0a0c10;--surface:#111318;--surface2:#181c24;--border:#1f2430;
+    --accent:#00e5ff;--accent2:#ff6b35;--accent3:#7fff6b;--accent4:#ffcc00;
+    --text:#e8ecf4;--muted:#5a6278;
+    --fm:'Space Mono',monospace;--fd:'Syne',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:var(--fd);min-height:100vh}
+  header{display:flex;align-items:center;justify-content:space-between;padding:20px 36px;border-bottom:1px solid var(--border)}
+  .logo{display:flex;align-items:center;gap:14px}
+  .badge{width:38px;height:38px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-weight:700;font-size:13px;color:#000}
+  h1{font-size:17px;font-weight:800} h1 span{color:var(--accent)}
+  .pill{display:flex;align-items:center;gap:8px;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);padding:5px 12px;border-radius:100px;font-family:var(--fm);font-size:11px;color:var(--accent)}
+  .dot{width:6px;height:6px;background:var(--accent3);border-radius:50%;animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .rbtn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:7px 14px;border-radius:8px;font-family:var(--fm);font-size:11px;cursor:pointer;transition:all .2s}
+  .rbtn:hover{border-color:var(--accent);color:var(--accent)}
+  main{padding:28px 36px;max-width:1400px;margin:0 auto}
+  .err{background:rgba(255,107,53,.1);border:1px solid rgba(255,107,53,.3);border-radius:12px;padding:14px 20px;margin-bottom:20px;font-family:var(--fm);font-size:12px;color:var(--accent2);display:none;line-height:2}
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+  .kcard{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;position:relative;overflow:hidden;transition:border-color .2s,transform .2s}
+  .kcard:hover{transform:translateY(-2px);border-color:var(--accent)}
+  .kcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ca)}
+  .kcard:nth-child(1){--ca:var(--accent)}.kcard:nth-child(2){--ca:var(--accent2)}.kcard:nth-child(3){--ca:var(--accent3)}.kcard:nth-child(4){--ca:var(--accent4)}
+  .klabel{font-size:10px;font-family:var(--fm);color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+  .kval{font-size:40px;font-weight:800;color:var(--ca);letter-spacing:-2px;line-height:1;margin-bottom:4px}
+  .ksub{font-size:11px;color:var(--muted);font-family:var(--fm)}
+  .sh{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .st{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:2px}
+  .sb{background:var(--surface2);border:1px solid var(--border);padding:2px 10px;border-radius:100px;font-family:var(--fm);font-size:10px;color:var(--muted)}
+  .tw{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:22px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  thead tr{background:var(--surface2);border-bottom:1px solid var(--border)}
+  thead th{padding:12px 18px;text-align:left;font-family:var(--fm);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted)}
+  tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
+  tbody tr:last-child{border-bottom:none}
+  tbody tr:hover{background:var(--surface2)}
+  tbody td{padding:12px 18px}
+  .tag{display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-family:var(--fm);font-size:10px;font-weight:700;text-transform:uppercase}
+  .tc{background:rgba(0,229,255,.12);color:var(--accent);border:1px solid rgba(0,229,255,.3)}
+  .to{background:rgba(255,107,53,.12);color:var(--accent2);border:1px solid rgba(255,107,53,.3)}
+  .tg{background:rgba(127,255,107,.12);color:var(--accent3);border:1px solid rgba(127,255,107,.3)}
+  .ty{background:rgba(255,204,0,.12);color:var(--accent4);border:1px solid rgba(255,204,0,.3)}
+  .mono{font-family:var(--fm);color:var(--accent)}
+  .money{font-family:var(--fm);color:var(--accent3)}
+  .empty{text-align:center;padding:40px;color:var(--muted);font-family:var(--fm);font-size:12px}
+  footer{text-align:center;padding:12px;font-family:var(--fm);font-size:10px;color:var(--muted);border-top:1px solid var(--border);margin-top:8px}
+  @media(max-width:800px){.kpi-grid{grid-template-columns:repeat(2,1fr)};main{padding:16px};header{padding:14px 16px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <div class="badge">SD</div>
+    <h1>Cierre <span>SAME DAY</span></h1>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center">
+    <div class="pill"><div class="dot"></div><span id="st">Cargando...</span></div>
+    <button class="rbtn" onclick="loadAll()">↻ Actualizar</button>
+  </div>
+</header>
+
+<main>
+  <div class="err" id="err"></div>
+
+  <div class="kpi-grid">
+    <div class="kcard"><div class="klabel">Paquetería Procesada</div><div class="kval" id="k0">—</div><div class="ksub">total</div></div>
+    <div class="kcard"><div class="klabel">Buffer Same Day</div><div class="kval" id="k1">—</div><div class="ksub">en buffer</div></div>
+    <div class="kcard"><div class="klabel">Re-Inducción / Dev.</div><div class="kval" id="k2">—</div><div class="ksub">devoluciones</div></div>
+    <div class="kcard"><div class="klabel">Estancados</div><div class="kval" id="k3">—</div><div class="ksub">estación + camino</div></div>
+  </div>
+
+  <div class="sh"><div class="st">Faltantes por Ruta</div><div class="sb" id="bF">—</div></div>
+  <div class="tw"><table>
+    <thead><tr><th>Origen / Ruta</th><th>ID Paquete</th><th>Detalle SHP</th><th>Valor CLP</th></tr></thead>
+    <tbody id="tF"><tr><td colspan="4" class="empty">Cargando...</td></tr></tbody>
+  </table></div>
+
+  <div class="sh"><div class="st">Dañados / Clasificación</div><div class="sb" id="bD">—</div></div>
+  <div class="tw"><table>
+    <thead><tr><th>Clasificación</th><th>ID Paquete</th><th>Detalle SHP</th><th>Tipo Daño</th><th>Valor CLP</th></tr></thead>
+    <tbody id="tD"><tr><td colspan="5" class="empty">Cargando...</td></tr></tbody>
+  </table></div>
+
+  <footer>Última actualización: <span id="lu">—</span> · Auto-refresh cada 60s</footer>
+</main>
+
+<script>
+const SID = '1z1M7C2qHCuMj6Pk6FNo5ENdgxb3t5CD5k31IyRuW220';
+
+function gvizURL(gid) {
+  return `https://docs.google.com/spreadsheets/d/${SID}/gviz/tq?tqx=out:json&gid=${gid}&t=${Date.now()}`;
+}
+
+async function fetchRows(gid) {
+  const r = await fetch(gvizURL(gid));
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  const txt = await r.text();
+  const m = txt.match(/setResponse\(([\s\S]*)\);?\s*$/);
+  if (!m) throw new Error('Respuesta inválida');
+  const j = JSON.parse(m[1]);
+  return (j.table.rows || []).map(row =>
+    (row.c || []).map(cell => (cell && cell.v != null) ? String(cell.v) : '')
+  );
+}
+
+function fmt(v) {
+  const n = parseFloat(String(v||'').replace(/[^\d.-]/g,''));
+  if (isNaN(n)) return v || '—';
+  return '$' + Math.round(n).toLocaleString('es-CL');
+}
+
+function autoTag(v) {
+  const s = (v||'').toLowerCase();
+  if (s.includes('devol') || s.includes('re-ind')) return `<span class="tag to">${v||'—'}</span>`;
+  if (s.includes('estanc')) return `<span class="tag ty">${v||'—'}</span>`;
+  if (s.includes('buffer')) return `<span class="tag tg">${v||'—'}</span>`;
+  return `<span class="tag tc">${v||'—'}</span>`;
+}
+
+async function loadAll() {
+  document.getElementById('st').textContent = 'Actualizando...';
+  document.getElementById('err').style.display = 'none';
+
+  try {
+    // GID=0 tiene los KPIs y tablas
+    const rows = await fetchRows(0);
+
+    const kpiKeys = {
+      'paqueteria procesada': 'k0',
+      'buffer same day':      'k1',
+      're-induccion devolucion': 'k2',
+      're-inducción devolución': 'k2',
+      'estancados estacion':  'k3_e',
+      'estancados estación':  'k3_e',
+      'estancados en camino': 'k3_c',
+    };
+
+    let kpi = { k0:'—', k1:'—', k2:'—', k3_e:0, k3_c:0 };
+    let mode = 'kpi', faltRows = [], danRows = [];
+
+    for (const row of rows) {
+      const c0  = (row[0]||'').trim();
+      const c0l = c0.toLowerCase();
+
+      if (c0l.includes('origen') && c0l.includes('ruta')) { mode = 'falt'; continue; }
+      if (c0l === 'clasificación' || c0l === 'clasificacion') { mode = 'dan'; continue; }
+
+      if (mode === 'kpi') {
+        for (const [label, key] of Object.entries(kpiKeys)) {
+          if (c0l.includes(label)) {
+            const val = (row[1]||'').trim();
+            if (key === 'k3_e' || key === 'k3_c') kpi[key] = parseFloat(val) || 0;
+            else kpi[key] = val !== '' ? val : '0';
+            break;
+          }
+        }
+      } else if (mode === 'falt' && c0) {
+        faltRows.push(row);
+      } else if (mode === 'dan' && c0) {
+        danRows.push(row);
+      }
+    }
+
+    // Mostrar KPIs — si el valor es decimal como "1.0", mostrarlo como entero
+    const cleanNum = v => {
+      if (v === '—') return '—';
+      const n = parseFloat(v);
+      return isNaN(n) ? v : Math.round(n).toString();
+    };
+
+    document.getElementById('k0').textContent = cleanNum(kpi.k0);
+    document.getElementById('k1').textContent = cleanNum(kpi.k1);
+    document.getElementById('k2').textContent = cleanNum(kpi.k2);
+    document.getElementById('k3').textContent = (kpi.k3_e + kpi.k3_c) > 0 ? Math.round(kpi.k3_e + kpi.k3_c) : '—';
+
+    document.getElementById('bF').textContent = faltRows.length + ' registros';
+    document.getElementById('tF').innerHTML = faltRows.length === 0
+      ? `<tr><td colspan="4" class="empty">Sin registros — agrega filas bajo "Origen / Ruta" en el sheet</td></tr>`
+      : faltRows.map(r => `<tr>
+          <td>${autoTag(r[0])}</td>
+          <td><span class="mono">${r[1]||'—'}</span></td>
+          <td>${r[2]||'—'}</td>
+          <td class="money">${fmt(r[3])}</td>
+        </tr>`).join('');
+
+    document.getElementById('bD').textContent = danRows.length + ' registros';
+    document.getElementById('tD').innerHTML = danRows.length === 0
+      ? `<tr><td colspan="5" class="empty">Sin registros — agrega filas bajo "Clasificación" en el sheet</td></tr>`
+      : danRows.map(r => `<tr>
+          <td>${autoTag(r[0])}</td>
+          <td><span class="mono">${r[1]||'—'}</span></td>
+          <td>${r[2]||'—'}</td>
+          <td><span class="tag to">${r[3]||'—'}</span></td>
+          <td class="money">${fmt(r[4])}</td>
+        </tr>`).join('');
+
+    document.getElementById('lu').textContent = new Date().toLocaleString('es-CL');
+    document.getElementById('st').textContent = 'En vivo ✓';
+
+  } catch(e) {
+    const el = document.getElementById('err');
+    el.style.display = 'block';
+    el.innerHTML = `⚠ Error: ${e.message}`;
+    document.getElementById('st').textContent = 'Error';
+    console.error(e);
+  }
+}
+
+loadAll();
+setInterval(loadAll, 60000);
+</script>
+</body>
+</html>
